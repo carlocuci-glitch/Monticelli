@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Guide - Scuola Guida</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans flex flex-col antialiased">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
+      <div class="flex items-center justify-between w-full lg:w-auto gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xl shadow-sm shrink-0">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-slate-900 leading-none">Agenda Guide</h1>
+            <p class="text-xs text-slate-500 mt-1">Patente B • Turni da 30 minuti</p>
+          </div>
+        </div>
+
+        <!-- Selettore Sede -->
+        <div class="flex items-center gap-2 bg-brand-50 border border-brand-200 px-3 py-1.5 rounded-lg">
+          <svg class="w-4 h-4 text-brand-600 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <select id="sedeSelector" aria-label="Seleziona Sede" class="bg-transparent border-0 text-sm font-bold text-brand-700 focus:ring-0 focus:outline-none cursor-pointer pr-2">
+          </select>
+        </div>
+      </div>
+      
+      <!-- Data Picker, Search & Config Buttons -->
+      <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
+        <div class="relative flex-1 sm:w-52">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="searchInput" placeholder="Cerca allievo o note..."
+            class="w-full pl-9 pr-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+        </div>
+        <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+          <button id="prevDay" aria-label="Giorno precedente" class="p-2 text-slate-600 hover:text-brand-600 hover:bg-white rounded-md transition-all">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          </button>
+          <input type="date" id="datePicker" class="bg-transparent border-0 text-sm font-semibold text-slate-700 focus:ring-0 cursor-pointer">
+          <button id="nextDay" aria-label="Giorno successivo" class="p-2 text-slate-600 hover:text-brand-600 hover:bg-white rounded-md transition-all">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+        </div>
+        <button id="printDailyBtn" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all border border-slate-200 shadow-sm" title="Stampa o esporta PDF per l'istruttore">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+          Stampa
+        </button>
+        <button id="openConfigBtn" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold flex items-center gap-2 transition-all shadow-sm">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
+          Gestisci Ore
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <!-- Stats Bar -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-blue-50 text-brand-600 flex items-center justify-center font-bold shrink-0">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+        </div>
+        <div>
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Posti Totali</span>
+          <p class="text-2xl font-bold text-slate-800" id="statTotal">0</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div>
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Prenotate</span>
+          <p class="text-2xl font-bold text-slate-800" id="statBooked">0</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold shrink-0">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+        </div>
+        <div>
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Disponibili</span>
+          <p class="text-2xl font-bold text-slate-800" id="statFree">0</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold shrink-0">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M7.5 11C9.43 11 11 9.43 11 7.5S9.43 4 7.5 4 4 5.57 4 7.5 5.57 11 7.5 11zm0-5C8.33 6 9 6.67 9 7.5S8.33 9 7.5 9 6 8.33 6 7.5 6.67 6 7.5 6zm0 7c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm-5 3.5c.2-.71 3.3-1.5 5-1.5s4.8.79 5 1.5H2.5zM16.5 11c1.93 0 3.5-1.57 3.5-3.5S18.43 4 16.5 4 13 5.57 13 7.5s1.57 3.5 3.5 3.5zm0-5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm0 7c-1.12 0-2.48.27-3.66.72 1.34.84 2.16 1.98 2.16 3.28V19h7v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div>
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Occupazione</span>
+          <p class="text-2xl font-bold text-slate-800" id="statOccupancy">0%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline Sections -->
+    <div class="space-y-6">
+      <!-- Mattina -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-500 fill-current" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0zm-12.37 12.37l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0z"/></svg>
+          <h2 class="font-bold text-slate-800">Mattina (08:30 - 13:00)</h2>
+        </div>
+        <div class="divide-y divide-slate-100" id="morningSlots"></div>
+      </div>
+      <!-- Pomeriggio -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+          <svg class="w-5 h-5 text-brand-500 fill-current" viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z"/></svg>
+          <h2 class="font-bold text-slate-800">Pomeriggio (14:00 - 19:00)</h2>
+        </div>
+        <div class="divide-y divide-slate-100" id="afternoonSlots"></div>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="flex justify-end items-center pt-4 border-t border-slate-200 text-xs text-slate-500">
+      <button id="clearDayBtn" class="flex items-center gap-1.5 text-red-500 hover:text-red-700 transition-colors font-medium">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        Svuota Giornata (<span id="clearDaySedeLabel"></span>)
+      </button>
+    </div>
+  </main>
+
+  <!-- Modal Prenotazione -->
+  <div id="bookingModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden transform transition-all">
+      <div class="bg-brand-600 text-white px-6 py-4 flex justify-between items-center">
+        <div>
+          <h3 class="font-bold text-lg" id="modalTitle">Prenota Guida Patente B</h3>
+          <p class="text-xs text-brand-100" id="modalSub">Inserisci i dati dell'allievo</p>
+        </div>
+        <button id="closeModal" class="text-brand-100 hover:text-white text-xl p-1 leading-none">&times;</button>
+      </div>
+      <form id="bookingForm" class="p-6 space-y-4">
+        <input type="hidden" id="modalHourSlot">
+        <input type="hidden" id="modalStudentIndex">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nome Allievo *</label>
+          <input type="text" id="studentName" required placeholder="Es. Mario Rossi"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Stato Prenotazione</label>
+          <select id="bookingStatus" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm">
+            <option value="confirmed">Confermata</option>
+            <option value="completed">Completata</option>
+            <option value="cancelled">Annullata</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">PIN Numerico di Blocco (Opzionale)</label>
+          <input type="password" id="bookingPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Es. 1234 (per bloccare modifica/cancellazione)"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Note (opzionale)</label>
+          <textarea id="bookingNotes" rows="2" placeholder="Es. Prima guida, parcheggi, istruttore..."
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm"></textarea>
+        </div>
+        <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+          <button type="button" id="cancelModal" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 text-sm font-medium">Annulla</button>
+          <button type="submit" id="saveBookingBtn" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 text-sm font-medium shadow-sm">Salva Prenotazione</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Verifica PIN -->
+  <div id="pinModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-6 text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-brand-50 text-brand-600 mx-auto flex items-center justify-center">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 text-base">Autenticazione PIN</h4>
+        <p class="text-xs text-slate-600 mt-1">Inserisci il PIN per modificare o eliminare la prenotazione.</p>
+      </div>
+      <div>
+        <input type="password" id="pinInputVerify" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="PIN..."
+          class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm text-center font-mono tracking-widest text-lg">
+        <p id="pinErrorMsg" class="text-xs text-red-500 mt-1 hidden font-medium">PIN errato. Riprova.</p>
+      </div>
+      <div class="flex justify-center gap-3 pt-2">
+        <button id="pinCancelBtn" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 text-xs font-semibold">Annulla</button>
+        <button id="pinSubmitBtn" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 text-xs font-semibold shadow-sm">Verifica PIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Configurazione Posti per Turno (1 o 2 istruttori/auto) -->
+  <div id="configModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
+        <div>
+          <h3 class="font-bold text-lg">Configurazione Turni (<span id="configSedeTitle"></span>)</h3>
+          <p class="text-xs text-slate-400">Scegli se ogni fascia da 30 min ha 1 posto (1 auto) o 2 posti contemporanei (2 auto)</p>
+        </div>
+        <button id="closeConfigModal" class="text-slate-400 hover:text-white text-xl p-1 leading-none">&times;</button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-2.5 flex-1" id="configSlotsList"></div>
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3 shrink-0">
+        <button type="button" id="cancelConfigModal" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-white text-sm font-medium">Annulla</button>
+        <button type="button" id="saveConfigBtn" class="px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 text-sm font-medium shadow-sm">Salva Regole Sede</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dialog di Conferma Custom -->
+  <div id="customConfirmModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-6 text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 mx-auto flex items-center justify-center">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm13-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 text-base" id="customConfirmTitle">Conferma Operazione</h4>
+        <p class="text-xs text-slate-600 mt-1" id="customConfirmMessage">Sei sicuro di voler procedere?</p>
+      </div>
+      <div class="flex justify-center gap-3 pt-2">
+        <button id="customConfirmCancelBtn" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 text-xs font-semibold">Annulla</button>
+        <button id="customConfirmOkBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-semibold shadow-sm">Conferma</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase integration (Firestore) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXXK6mvn4_4eY2NcogvLVhsih0hBDVgPU",
+      authDomain: "agenda-guide.firebaseapp.com",
+      projectId: "agenda-guide",
+      storageBucket: "agenda-guide.firebasestorage.app",
+      messagingSenderId: "46794941870",
+      appId: "1:46794941870:web:24604cd526f9896409d43f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ==========================================
+    // CONFIGURAZIONE SEDI (Modifica qui i nomi)
+    // ==========================================
+    const SEDI = [
+      { id: "monticelli", name: "Monticelli" },
+      { id: "filiale_2", name: "Filiale 2" },
+      { id: "filiale_3", name: "Filiale 3" }
+    ];
+
+    // ==========================================
+    // ORARI DA 30 MINUTI A PARTIRE DALLE 08:30
+    // ==========================================
+    const HOURS_CONFIG = [
+      { id: "08:30", label: "08:30 - 09:00", period: "morning" },
+      { id: "09:00", label: "09:00 - 09:30", period: "morning" },
+      { id: "09:30", label: "09:30 - 10:00", period: "morning" },
+      { id: "10:00", label: "10:00 - 10:30", period: "morning" },
+      { id: "10:30", label: "10:30 - 11:00", period: "morning" },
+      { id: "11:00", label: "11:00 - 11:30", period: "morning" },
+      { id: "11:30", label: "11:30 - 12:00", period: "morning" },
+      { id: "12:00", label: "12:00 - 12:30", period: "morning" },
+      { id: "12:30", label: "12:30 - 13:00", period: "morning" },
+      { id: "14:00", label: "14:00 - 14:30", period: "afternoon" },
+      { id: "14:30", label: "14:30 - 15:00", period: "afternoon" },
+      { id: "15:00", label: "15:00 - 15:30", period: "afternoon" },
+      { id: "15:30", label: "15:30 - 16:00", period: "afternoon" },
+      { id: "16:00", label: "16:00 - 16:30", period: "afternoon" },
+      { id: "16:30", label: "16:30 - 17:00", period: "afternoon" },
+      { id: "17:00", label: "17:00 - 17:30", period: "afternoon" },
+      { id: "17:30", label: "17:30 - 18:00", period: "afternoon" },
+      { id: "18:00", label: "18:00 - 18:30", period: "afternoon" },
+      { id: "18:30", label: "18:30 - 19:00", period: "afternoon" }
+    ];
+
+    function getLocalDateString(d = new Date()) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Recupera sede da URL (?sede=...) o localStorage o default prima sede
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramSede = urlParams.get('sede');
+    const savedSede = localStorage.getItem('selectedSede');
+    let currentSede = SEDI.some(s => s.id === paramSede) ? paramSede :
+                      (SEDI.some(s => s.id === savedSede) ? savedSede : SEDI[0].id);
+
+    let currentDate = getLocalDateString();
+    let currentDayBookings = {}; 
+    let hourSettings = {}; 
+    let unsubscribeBookings = null;
+    let unsubscribeSettings = null;
+
+    const sedeSelector = document.getElementById('sedeSelector');
+    const datePicker = document.getElementById('datePicker');
+    const searchInput = document.getElementById('searchInput');
+    const morningContainer = document.getElementById('morningSlots');
+    const afternoonContainer = document.getElementById('afternoonSlots');
+    const bookingModal = document.getElementById('bookingModal');
+    const bookingForm = document.getElementById('bookingForm');
+    const configModal = document.getElementById('configModal');
+    const pinModal = document.getElementById('pinModal');
+
+    // Popola il menu a tendina delle sedi
+    SEDI.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.name;
+      sedeSelector.appendChild(opt);
+    });
+    sedeSelector.value = currentSede;
+    datePicker.value = currentDate;
+
+    function getCurrentSedeName() {
+      const found = SEDI.find(s => s.id === currentSede);
+      return found ? found.name : currentSede;
+    }
+
+    function updateSedeLabels() {
+      const name = getCurrentSedeName();
+      document.getElementById('clearDaySedeLabel').innerText = name;
+      document.getElementById('configSedeTitle').innerText = name;
+    }
+
+    function showConfirmModal(title, message, onConfirm) {
+      const confirmModal = document.getElementById('customConfirmModal');
+      document.getElementById('customConfirmTitle').innerText = title;
+      document.getElementById('customConfirmMessage').innerText = message;
+      
+      const okBtn = document.getElementById('customConfirmOkBtn');
+      const cancelBtn = document.getElementById('customConfirmCancelBtn');
+      
+      const cleanUp = () => {
+        confirmModal.classList.add('hidden');
+        okBtn.onclick = null;
+        cancelBtn.onclick = null;
+      };
+
+      okBtn.onclick = () => {
+        cleanUp();
+        if (onConfirm) onConfirm();
+      };
+      
+      cancelBtn.onclick = cleanUp;
+      confirmModal.classList.remove('hidden');
+    }
+
+    function listenToSettings() {
+      if (unsubscribeSettings) unsubscribeSettings();
+      const settingsRef = doc(db, 'settings_patente_b', currentSede);
+      unsubscribeSettings = onSnapshot(settingsRef, (docSnap) => {
+        hourSettings = docSnap.exists() ? docSnap.data() : {};
+        renderAgenda();
+      }, (err) => console.error("Errore impostazioni:", err));
+    }
+
+    function listenToDay(date) {
+      if (unsubscribeBookings) unsubscribeBookings();
+      const dayRef = doc(db, `bookings_patente_b_${currentSede}`, date);
+      
+      unsubscribeBookings = onSnapshot(dayRef, (docSnap) => {
+        currentDayBookings = docSnap.exists() ? docSnap.data() : {};
+        renderAgenda();
+      }, (error) => {
+        console.error("Errore Firestore:", error);
+        renderAgenda();
+      });
+    }
+
+    // Default: 1 guida (1 auto) per ogni slot da 30 minuti. Se attivato doubleGuide, permette 2 guide contemporanee.
+    function isDoubleSlot(hourId) {
+      return hourSettings[hourId] && hourSettings[hourId].doubleGuide === true;
+    }
+
+    function renderAgenda() {
+      morningContainer.innerHTML = '';
+      afternoonContainer.innerHTML = '';
+      const filterTerm = searchInput.value.toLowerCase().trim();
+
+      let totalSlotsCount = 0;
+      let bookedSlotsCount = 0;
+
+      HOURS_CONFIG.forEach(hourObj => {
+        const isDouble = isDoubleSlot(hourObj.id);
+        const maxSeats = isDouble ? 2 : 1; 
+        totalSlotsCount += maxSeats;
+
+        const hourBookings = currentDayBookings[hourObj.id] || [null, null];
+
+        if (filterTerm) {
+          const matchAny = hourBookings.some(b => {
+            if (!b) return false;
+            return b.name.toLowerCase().includes(filterTerm) ||
+                   (b.notes && b.notes.toLowerCase().includes(filterTerm));
+          });
+          if (!matchAny) return;
+        }
+
+        const slotEl = document.createElement('div');
+        slotEl.className = "p-4 sm:px-6 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors hover:bg-slate-50/80";
+
+        let badgeType = isDouble 
+          ? `<span class="text-[11px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-medium">2 Posti (2 Auto)</span>` 
+          : `<span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">30 min • Pat. B</span>`;
+
+        let htmlContent = `
+          <div class="flex items-center gap-2.5 sm:w-56 shrink-0">
+            <span class="font-mono text-sm font-bold text-slate-800 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">${hourObj.label}</span>
+            ${badgeType}
+          </div>
+          <div class="flex-1 grid grid-cols-1 ${isDouble ? 'md:grid-cols-2' : ''} gap-2.5">
+        `;
+
+        for (let i = 0; i < maxSeats; i++) {
+          const data = hourBookings[i];
+          const isBooked = !!data;
+          const subLabel = isDouble ? `Auto ${i + 1}` : "Guida 30m";
+
+          if (isBooked) bookedSlotsCount++;
+
+          if (!isBooked) {
+            htmlContent += `
+              <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  ${isDouble ? `<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 font-bold text-[11px] flex items-center justify-center">${i+1}</span>` : ''}
+                  <span class="text-xs text-slate-400 italic">${subLabel} - Libero</span>
+                </div>
+                <button type="button" onclick="requestSlotAccess('${hourObj.id}', ${i}, 'book')" class="px-3 py-1 bg-brand-50 text-brand-600 hover:bg-brand-600 hover:text-white rounded-lg text-xs font-semibold border border-brand-100 transition-all flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Prenota
+                </button>
+              </div>
+            `;
+          } else {
+            let statusBadge = '';
+            switch(data.status) {
+              case 'completed': statusBadge = '<span class="px-2 py-0.5 text-[10px] rounded-full bg-emerald-100 text-emerald-700 font-medium">Completata</span>'; break;
+              case 'cancelled': statusBadge = '<span class="px-2 py-0.5 text-[10px] rounded-full bg-red-100 text-red-700 font-medium">Annullata</span>'; break;
+              default: statusBadge = '<span class="px-2 py-0.5 text-[10px] rounded-full bg-blue-100 text-blue-700 font-medium">Confermata</span>';
+            }
+            let lockBadge = data.pin ? `<span class="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold rounded flex items-center gap-1">🔒</span>` : '';
+
+            htmlContent += `
+              <div class="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 overflow-hidden">
+                  ${isDouble ? `<span class="w-5 h-5 rounded-full bg-brand-50 text-brand-600 font-bold text-[11px] flex items-center justify-center shrink-0">${i+1}</span>` : ''}
+                  <div class="overflow-hidden">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="font-bold text-slate-900 text-sm truncate">${escapeHtml(data.name)}</span>
+                      <span class="px-1.5 py-0.5 bg-slate-100 text-slate-700 text-[10px] font-bold rounded">Pat. B</span>
+                      ${statusBadge}
+                      ${lockBadge}
+                    </div>
+                    ${data.notes ? `<p class="text-[11px] text-slate-500 truncate mt-0.5">Note: ${escapeHtml(data.notes)}</p>` : ''}
+                  </div>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="requestSlotAccess('${hourObj.id}', ${i}, 'edit')" class="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-all" title="Modifica">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                  </button>
+                  <button type="button" onclick="requestSlotAccess('${hourObj.id}', ${i}, 'delete')" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-slate-100 rounded-lg transition-all" title="Elimina">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                  </button>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        htmlContent += `</div>`;
+        slotEl.innerHTML = htmlContent;
+
+        if (hourObj.period === 'morning') morningContainer.appendChild(slotEl);
+        else afternoonContainer.appendChild(slotEl);
+      });
+
+      document.getElementById('statTotal').innerText = totalSlotsCount;
+      document.getElementById('statBooked').innerText = bookedSlotsCount;
+      document.getElementById('statFree').innerText = Math.max(0, totalSlotsCount - bookedSlotsCount);
+      document.getElementById('statOccupancy').innerText = totalSlotsCount > 0 ? Math.round((bookedSlotsCount / totalSlotsCount) * 100) + '%' : '0%';
+    }
+
+    window.requestSlotAccess = function(hourId, seatIndex, action) {
+      const bookings = currentDayBookings[hourId] || [];
+      const booking = bookings[seatIndex];
+
+      if (booking && booking.pin) {
+        openPinModal(hourId, seatIndex, action);
+      } else {
+        if (action === 'delete') deleteBooking(hourId, seatIndex);
+        else openBookingModal(hourId, seatIndex);
+      }
+    }
+
+    function openPinModal(hourId, seatIndex, action) {
+      const pinInput = document.getElementById('pinInputVerify');
+      const errorMsg = document.getElementById('pinErrorMsg');
+      pinInput.value = '';
+      errorMsg.classList.add('hidden');
+      pinModal.classList.remove('hidden');
+      pinInput.focus();
+
+      const bookings = currentDayBookings[hourId] || [];
+      const booking = bookings[seatIndex];
+      const verifyBtn = document.getElementById('pinSubmitBtn');
+      const cancelBtn = document.getElementById('pinCancelBtn');
+
+      const cleanup = () => {
+        pinModal.classList.add('hidden');
+        verifyBtn.onclick = null;
+        cancelBtn.onclick = null;
+      };
+
+      verifyBtn.onclick = () => {
+        if (pinInput.value === booking.pin) {
+          cleanup();
+          if (action === 'delete') deleteBooking(hourId, seatIndex);
+          else openBookingModal(hourId, seatIndex);
+        } else {
+          errorMsg.classList.remove('hidden');
+          pinInput.focus();
+        }
+      };
+      cancelBtn.onclick = cleanup;
+    }
+
+    function openBookingModal(hourId, seatIndex) {
+      document.getElementById('modalHourSlot').value = hourId;
+      document.getElementById('modalStudentIndex').value = seatIndex;
+      const hourObj = HOURS_CONFIG.find(h => h.id === hourId);
+      const isDouble = isDoubleSlot(hourId);
+      const seatLabel = isDouble ? ` • Posto/Auto ${seatIndex + 1}` : '';
+      document.getElementById('modalSub').innerText = `${getCurrentSedeName()} • ${hourObj.label}${seatLabel}`;
+
+      const bookings = currentDayBookings[hourId] || [];
+      const existing = bookings[seatIndex];
+
+      if (existing) {
+        document.getElementById('studentName').value = existing.name;
+        document.getElementById('bookingStatus').value = existing.status || 'confirmed';
+        document.getElementById('bookingPin').value = existing.pin || '';
+        document.getElementById('bookingNotes').value = existing.notes || '';
+      } else {
+        bookingForm.reset();
+        document.getElementById('modalHourSlot').value = hourId;
+        document.getElementById('modalStudentIndex').value = seatIndex;
+      }
+      bookingModal.classList.remove('hidden');
+      document.getElementById('studentName').focus();
+    }
+
+    window.deleteBooking = function(hourId, seatIndex) {
+      showConfirmModal("Cancellazione Prenotazione", "Sei sicuro di voler eliminare questa prenotazione?", async () => {
+        let bookings = [...(currentDayBookings[hourId] || [null, null])];
+        bookings[seatIndex] = null;
+
+        if (bookings.every(b => !b)) {
+          delete currentDayBookings[hourId];
+        } else {
+          currentDayBookings[hourId] = bookings;
+        }
+
+        try {
+          await setDoc(doc(db, `bookings_patente_b_${currentSede}`, currentDate), currentDayBookings);
+        } catch (e) {
+          console.error("Errore cancellazione:", e);
+        }
+      });
+    }
+
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById('saveBookingBtn');
+      saveBtn.disabled = true;
+      saveBtn.innerText = "Salvataggio...";
+
+      const hourId = document.getElementById('modalHourSlot').value;
+      const seatIndex = parseInt(document.getElementById('modalStudentIndex').value);
+      const isDouble = isDoubleSlot(hourId);
+      const maxSeats = isDouble ? 2 : 1;
+
+      let bookings = [...(currentDayBookings[hourId] || Array(maxSeats).fill(null))];
+      
+      bookings[seatIndex] = {
+        name: document.getElementById('studentName').value.trim(),
+        license: "B",
+        status: document.getElementById('bookingStatus').value,
+        pin: document.getElementById('bookingPin').value.trim(),
+        notes: document.getElementById('bookingNotes').value.trim()
+      };
+
+      currentDayBookings[hourId] = bookings;
+
+      try {
+        await setDoc(doc(db, `bookings_patente_b_${currentSede}`, currentDate), currentDayBookings);
+        bookingModal.classList.add('hidden');
+      } catch (err) {
+        console.error("Errore salvataggio:", err);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "Salva Prenotazione";
+      }
+    });
+
+    // Stampa Report Giornaliero
+    document.getElementById('printDailyBtn').addEventListener('click', () => {
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      const sedeName = getCurrentSedeName();
+      
+      let htmlContent = `
+        <!DOCTYPE html>
+        <html lang="it">
+        <head>
+          <meta charset="UTF-8">
+          <title>Report Guide Patente B - ${sedeName} - ${currentDate}</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #111; margin: 20px; font-size: 13px; }
+            h1 { font-size: 19px; margin-bottom: 4px; }
+            .subtitle { font-size: 14px; color: #444; margin-bottom: 16px; border-bottom: 2px solid #222; padding-bottom: 8px; }
+            .hour-row { display: flex; border-bottom: 1px solid #ddd; padding: 7px 0; align-items: center; }
+            .time { font-weight: bold; width: 120px; flex-shrink: 0; font-family: monospace; font-size: 14px; }
+            .details { flex-grow: 1; display: flex; gap: 12px; flex-wrap: wrap; }
+            .student-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 4px; min-width: 240px; }
+            .empty { color: #94a3b8; font-style: italic; }
+            @media print { .no-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <h1>AGENDA GUIDE PATENTE B</h1>
+          <div class="subtitle">Sede: <strong>${sedeName}</strong> &nbsp;|&nbsp; Data: <strong>${currentDate}</strong></div>
+      `;
+
+      HOURS_CONFIG.forEach(hourObj => {
+        const isDouble = isDoubleSlot(hourObj.id);
+        const maxSeats = isDouble ? 2 : 1;
+        const bookings = currentDayBookings[hourObj.id] || [];
+
+        htmlContent += `<div class="hour-row"><div class="time">${hourObj.label}</div><div class="details">`;
+
+        let hasBookings = false;
+        for (let i = 0; i < maxSeats; i++) {
+          const data = bookings[i];
+          if (data) {
+            hasBookings = true;
+            const prefix = isDouble ? `[Auto ${i + 1}] ` : '';
+            htmlContent += `
+              <div class="student-box">
+                <strong>${prefix}${escapeHtml(data.name)}</strong> (Pat. B) ${data.pin ? '🔒' : ''}
+                ${data.notes ? `<br><small>Note: ${escapeHtml(data.notes)}</small>` : ''}
+              </div>
+            `;
+          }
+        }
+        if (!hasBookings) {
+          htmlContent += `<span class="empty">Libero</span>`;
+        }
+
+        htmlContent += `</div></div>`;
+      });
+
+      htmlContent += `
+          <div class="no-print" style="margin-top: 25px; text-align: right;">
+            <button onclick="window.print()" style="padding: 10px 20px; background: #1d4ed8; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Stampa o Salva PDF</button>
+          </div>
+        </body>
+        </html>
+      `;
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+    });
+
+    // Gestione Configurazione (1 posto o 2 posti contemporanei per fascia da 30m)
+    document.getElementById('openConfigBtn').addEventListener('click', () => {
+      const container = document.getElementById('configSlotsList');
+      container.innerHTML = '';
+
+      HOURS_CONFIG.forEach(hourObj => {
+        const isDouble = isDoubleSlot(hourObj.id);
+
+        const row = document.createElement('div');
+        row.className = "px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 flex items-center justify-between gap-2";
+        row.innerHTML = `
+          <div>
+            <span class="font-bold text-slate-800 text-sm font-mono">${hourObj.label}</span>
+            <span class="text-xs text-slate-500 ml-2">(${hourObj.period === 'morning' ? 'Mattina' : 'Pomeriggio'})</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer config-double-toggle" data-hour-id="${hourObj.id}" ${isDouble ? 'checked' : ''}>
+            <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600"></div>
+            <span class="ml-2 text-xs font-semibold text-slate-700 w-24">${isDouble ? '2 Posti (2 Auto)' : '1 Posto (1 Auto)'}</span>
+          </label>
+        `;
+
+        // Aggiorna testo label in tempo reale al click
+        const checkbox = row.querySelector('.config-double-toggle');
+        const labelSpan = row.querySelector('span.w-24');
+        checkbox.addEventListener('change', () => {
+          labelSpan.textContent = checkbox.checked ? '2 Posti (2 Auto)' : '1 Posto (1 Auto)';
+        });
+
+        container.appendChild(row);
+      });
+      configModal.classList.remove('hidden');
+    });
+
+    document.getElementById('saveConfigBtn').addEventListener('click', async () => {
+      const newSettings = {};
+      HOURS_CONFIG.forEach(hourObj => {
+        const toggle = document.querySelector(`.config-double-toggle[data-hour-id="${hourObj.id}"]`);
+        newSettings[hourObj.id] = { 
+          doubleGuide: toggle ? toggle.checked : false
+        };
+      });
+
+      try {
+        await setDoc(doc(db, 'settings_patente_b', currentSede), newSettings);
+        configModal.classList.add('hidden');
+      } catch (err) {
+        console.error("Errore salvataggio configurazione:", err);
+      }
+    });
+
+    // Cambio Sede dal menu a tendina
+    sedeSelector.addEventListener('change', (e) => {
+      currentSede = e.target.value;
+      localStorage.setItem('selectedSede', currentSede);
+      
+      // Aggiorna anche l'URL senza ricaricare la pagina, così il link è condivisibile
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('sede', currentSede);
+      window.history.replaceState({}, '', newUrl);
+
+      updateSedeLabels();
+      listenToSettings();
+      listenToDay(currentDate);
+    });
+
+    [bookingModal, configModal, pinModal, document.getElementById('customConfirmModal')].forEach(modal => {
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+    });
+
+    datePicker.addEventListener('change', (e) => { currentDate = e.target.value; listenToDay(currentDate); });
+    document.getElementById('prevDay').addEventListener('click', () => {
+      const [y, m, d] = currentDate.split('-').map(Number);
+      currentDate = getLocalDateString(new Date(y, m - 1, d - 1));
+      datePicker.value = currentDate;
+      listenToDay(currentDate);
+    });
+    document.getElementById('nextDay').addEventListener('click', () => {
+      const [y, m, d] = currentDate.split('-').map(Number);
+      currentDate = getLocalDateString(new Date(y, m - 1, d + 1));
+      datePicker.value = currentDate;
+      listenToDay(currentDate);
+    });
+
+    searchInput.addEventListener('input', renderAgenda);
+    document.getElementById('closeModal').addEventListener('click', () => bookingModal.classList.add('hidden'));
+    document.getElementById('cancelModal').addEventListener('click', () => bookingModal.classList.add('hidden'));
+    document.getElementById('closeConfigModal').addEventListener('click', () => configModal.classList.add('hidden'));
+    document.getElementById('cancelConfigModal').addEventListener('click', () => configModal.classList.add('hidden'));
+
+    document.getElementById('clearDayBtn').addEventListener('click', () => {
+      showConfirmModal("Svuota Giornata", `Vuoi cancellare tutte le prenotazioni del ${currentDate} per ${getCurrentSedeName()}?`, async () => {
+        await setDoc(doc(db, `bookings_patente_b_${currentSede}`, currentDate), {});
+      });
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    updateSedeLabels();
+    listenToSettings();
+    listenToDay(currentDate);
+  </script>
+</body>
+</html>
