@@ -248,19 +248,23 @@
 
   <!-- Firebase integration (Firestore) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+   // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBXXK6mvn4_4eY2NcogvLVhsih0hBDVgPU",
-      authDomain: "agenda-guide.firebaseapp.com",
-      projectId: "agenda-guide",
-      storageBucket: "agenda-guide.firebasestorage.app",
-      messagingSenderId: "46794941870",
-      appId: "1:46794941870:web:24604cd526f9896409d43f"
-    };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCv_J-PI4TyRX57ozu01_3NkSjbbsPBJwQ",
+  authDomain: "monticelli-1faf4.firebaseapp.com",
+  projectId: "monticelli-1faf4",
+  storageBucket: "monticelli-1faf4.firebasestorage.app",
+  messagingSenderId: "1033737443263",
+  appId: "1:1033737443263:web:0b262e51d0ca012cb3f30a"
+};
 
-    const app = initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     // ==========================================
