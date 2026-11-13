@@ -24,6 +24,25 @@
   </script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen font-sans flex flex-col antialiased">
+  <!-- Schermata di Autenticazione Iniziale (Blocco Link) -->
+  <div id="authOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-6 text-center space-y-4">
+      <div class="w-14 h-14 rounded-full bg-brand-50 text-brand-600 mx-auto flex items-center justify-center">
+        <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      </div>
+      <div>
+        <h3 class="font-bold text-slate-900 text-lg">Accesso Protetto</h3>
+        <p class="text-xs text-slate-600 mt-1">Inserisci il PIN amministrativo per sbloccare l'agenda.</p>
+      </div>
+      <div>
+        <input type="password" id="globalPinInput" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="PIN Segreto..." 
+          class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm text-center font-mono tracking-widest text-lg">
+        <p id="globalPinError" class="text-xs text-red-500 mt-1.5 hidden font-medium">PIN non corretto. Riprova.</p>
+      </div>
+      <button id="globalPinSubmit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold shadow-sm transition-all">Sblocca Agenda</button>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
@@ -251,6 +270,11 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+    // ==========================================
+    // CAMBIA QUI IL TUO PIN SEGRETO PRINCIPALE
+    // ==========================================
+    const MASTER_PIN = "1234"; 
+
     // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCv_J-PI4TyRX57ozu01_3NkSjbbsPBJwQ",
@@ -264,6 +288,45 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    // ==========================================
+    // GESTIONE SICUREZZA / ACCESSO CON PIN
+    // ==========================================
+    const authOverlay = document.getElementById('authOverlay');
+    const globalPinInput = document.getElementById('globalPinInput');
+    const globalPinSubmit = document.getElementById('globalPinSubmit');
+    const globalPinError = document.getElementById('globalPinError');
+
+    function checkAuth() {
+      const isAuthed = sessionStorage.getItem('agenda_auth') === 'true';
+      if (!isAuthed) {
+        authOverlay.classList.remove('hidden');
+        globalPinInput.focus();
+      } else {
+        authOverlay.classList.add('hidden');
+        initApp();
+      }
+    }
+
+    function verifyGlobalPin() {
+      if (globalPinInput.value === MASTER_PIN) {
+        sessionStorage.setItem('agenda_auth', 'true');
+        authOverlay.classList.add('hidden');
+        initApp();
+      } else {
+        globalPinError.classList.remove('hidden');
+        globalPinInput.value = '';
+        globalPinInput.focus();
+      }
+    }
+
+    globalPinSubmit.onclick = verifyGlobalPin;
+    globalPinInput.onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        verifyGlobalPin();
+      }
+    };
 
     // ==========================================
     // CONFIGURAZIONE SEDI
@@ -742,12 +805,10 @@
       listenToDay(currentDate);
     });
 
-    // Gestione Chiusura modali secondari al click sullo sfondo (escluso bookingModal per sicurezza)
     [configModal, pinModal, confirmModal].forEach(modal => {
       modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     });
 
-    // Supporto tasto ESC per chiudere i modali rapidamente
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         bookingModal.classList.add('hidden');
@@ -788,9 +849,14 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    updateSedeLabels();
-    listenToSettings();
-    listenToDay(currentDate);
+    function initApp() {
+      updateSedeLabels();
+      listenToSettings();
+      listenToDay(currentDate);
+    }
+
+    // Avvio controllo autenticazione all'avvio della pagina
+    checkAuth();
   </script>
 </body>
 </html>
