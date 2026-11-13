@@ -80,9 +80,9 @@
             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
           </button>
         </div>
-        <button id="openMonthlyReportBtn" class="px-3 py-2 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-brand-200 shadow-sm" title="Conta guide mensili per allievo">
+        <button id="openMonthlyReportBtn" class="px-3 py-2 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-brand-200 shadow-sm" title="Conta guide mensili per allievo nella sede corrente">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-          Report Mensile
+          Report Mensile (<span id="btnSedeName">Sede</span>)
         </button>
         <button id="printDailyBtn" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border border-slate-200 shadow-sm" title="Stampa o esporta PDF per l'istruttore">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
@@ -168,13 +168,13 @@
     </div>
   </main>
 
-  <!-- Modal Report Mensile Allievi -->
+  <!-- Modal Report Mensile Allievi (Specifico per Sede Corrente) -->
   <div id="monthlyReportModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
       <div class="bg-brand-600 text-white px-6 py-4 flex justify-between items-center shrink-0">
         <div>
-          <h3 class="font-bold text-lg">Report Mensile Guide (<span id="reportSedeTitle"></span>)</h3>
-          <p class="text-xs text-brand-100">Conta le guide effettuate (Confermate e Completate) per allievo</p>
+          <h3 class="font-bold text-lg">Report Mensile Guide — <span id="reportSedeTitle" class="underline"></span></h3>
+          <p class="text-xs text-brand-100">Conteggio guide effettuate nella sede selezionata</p>
         </div>
         <button id="closeMonthlyModal" class="text-brand-100 hover:text-white text-xl p-1 leading-none">&times;</button>
       </div>
@@ -186,8 +186,8 @@
           <input type="month" id="reportMonthPicker" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-brand-500 focus:outline-none">
         </div>
         <div class="flex-1">
-          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Cerca Allievo</label>
-          <input type="text" id="reportStudentSearch" placeholder="Digita nome allievo (es. Mario Rossi)..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Cerca Allievo in questa sede</label>
+          <input type="text" id="reportStudentSearch" placeholder="Digita nome allievo..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none">
         </div>
         <div class="flex items-end">
           <button id="runMonthlySearchBtn" class="w-full sm:w-auto px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold shadow-sm transition-all">
@@ -450,6 +450,7 @@
       document.getElementById('clearDaySedeLabel').innerText = name;
       document.getElementById('configSedeTitle').innerText = name;
       document.getElementById('reportSedeTitle').innerText = name;
+      document.getElementById('btnSedeName').innerText = name;
     }
 
     function showConfirmModal(title, message, onConfirm) {
@@ -601,7 +602,7 @@
     }
 
     // ==========================================
-    // RICERCA E CONTEGGIO GUIDE MENSILE
+    // RICERCA E CONTEGGIO GUIDE MENSILE (SEDE CORRENTE)
     // ==========================================
     const reportMonthPicker = document.getElementById('reportMonthPicker');
     const reportStudentSearch = document.getElementById('reportStudentSearch');
@@ -609,7 +610,6 @@
     const monthlyReportSummaryText = document.getElementById('monthlyReportSummaryText');
 
     document.getElementById('openMonthlyReportBtn').addEventListener('click', () => {
-      // Imposta il mese attualmente selezionato nel datePicker principale
       reportMonthPicker.value = currentDate.slice(0, 7);
       reportStudentSearch.value = '';
       monthlyReportModal.classList.remove('hidden');
@@ -631,12 +631,15 @@
       if (!selectedMonth) return;
 
       const searchTerm = reportStudentSearch.value.toLowerCase().trim();
-      monthlyReportContent.innerHTML = `<div class="text-center py-8 text-sm text-slate-500">Caricamento guide del mese in corso...</div>`;
+      const activeSedeId = currentSede;
+      const activeSedeName = getCurrentSedeName();
+
+      monthlyReportContent.innerHTML = `<div class="text-center py-8 text-sm text-slate-500">Caricamento guide di ${activeSedeName}...</div>`;
       monthlyReportSummaryText.innerText = '';
 
       try {
-        const colRef = collection(db, `bookings_patente_b_${currentSede}`);
-        // Query intervallo date sul documentId (es. da "2026-11-01" a "2026-11-31")
+        // Query ristretta esclusivamente alla collezione della sede corrente
+        const colRef = collection(db, `bookings_patente_b_${activeSedeId}`);
         const q = query(
           colRef,
           where(documentId(), '>=', `${selectedMonth}-01`),
@@ -644,7 +647,6 @@
         );
         const snapshot = await getDocs(q);
 
-        // Mappa per raggruppare per nome normalizzato
         const studentsMap = {};
         let totalMonthLessons = 0;
 
@@ -656,7 +658,6 @@
             const slots = dayData[hourId] || [];
             slots.forEach(booking => {
               if (!booking || !booking.name) return;
-              // Esclude guide annullate dal conteggio
               if (booking.status === 'cancelled') return;
 
               const rawName = booking.name.trim();
@@ -688,14 +689,13 @@
         const studentsList = Object.values(studentsMap).sort((a, b) => b.count - a.count || a.displayName.localeCompare(b.displayName));
 
         if (studentsList.length === 0) {
-          monthlyReportContent.innerHTML = `<p class="text-center text-sm text-slate-400 py-8">Nessuna guida trovata per i criteri selezionati.</p>`;
-          monthlyReportSummaryText.innerText = `0 guide totali`;
+          monthlyReportContent.innerHTML = `<p class="text-center text-sm text-slate-400 py-8">Nessuna guida trovata per "${activeSedeName}" nel periodo selezionato.</p>`;
+          monthlyReportSummaryText.innerText = `0 guide totali (${activeSedeName})`;
           return;
         }
 
         let html = '';
         studentsList.forEach(student => {
-          // Ordina le lezioni dell'allievo cronologicamente
           student.lessons.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
 
           const lessonsListHtml = student.lessons.map(l => {
@@ -724,7 +724,10 @@
                   <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center uppercase">
                     ${escapeHtml(student.displayName.slice(0, 2))}
                   </div>
-                  <span class="font-bold text-slate-900 text-base">${escapeHtml(student.displayName)}</span>
+                  <div>
+                    <span class="font-bold text-slate-900 text-base">${escapeHtml(student.displayName)}</span>
+                    <p class="text-[10px] text-slate-500">Sede: <strong class="text-brand-700">${activeSedeName}</strong></p>
+                  </div>
                 </div>
                 <span class="px-3 py-1 bg-brand-600 text-white text-xs font-bold rounded-full shadow-sm">
                   ${student.count} ${student.count === 1 ? 'guida' : 'guide'} (${student.count * 30} min)
@@ -738,11 +741,11 @@
         });
 
         monthlyReportContent.innerHTML = html;
-        monthlyReportSummaryText.innerText = `${studentsList.length} allievi • ${totalMonthLessons} guide totali nel mese`;
+        monthlyReportSummaryText.innerText = `${studentsList.length} allievi • ${totalMonthLessons} guide totali in ${activeSedeName}`;
 
       } catch (err) {
         console.error("Errore caricamento report mensile:", err);
-        monthlyReportContent.innerHTML = `<p class="text-center text-sm text-red-500 py-8">Errore durante il caricamento dei dati. Controlla la connessione o le regole Firestore.</p>`;
+        monthlyReportContent.innerHTML = `<p class="text-center text-sm text-red-500 py-8">Errore durante il caricamento dei dati.</p>`;
       }
     }
 
@@ -1026,6 +1029,7 @@
     searchInput.addEventListener('input', renderAgenda);
     document.getElementById('closeModal').addEventListener('click', () => bookingModal.classList.add('hidden'));
     document.getElementById('cancelModal').addEventListener('click', () => bookingModal.classList.add('hidden'));
+    document.getElementById('closeConfigModal').addEventListener('click', () => configModal.classList.add('hidden'));
     document.getElementById('closeConfigModal').addEventListener('click', () => configModal.classList.add('hidden'));
     document.getElementById('cancelConfigModal').addEventListener('click', () => configModal.classList.add('hidden'));
     document.getElementById('closeMonthlyModal').addEventListener('click', () => monthlyReportModal.classList.add('hidden'));
