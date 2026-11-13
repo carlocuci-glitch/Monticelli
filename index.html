@@ -37,7 +37,6 @@
             <p class="text-xs text-slate-500 mt-1">Patente B • Turni da 30 minuti</p>
           </div>
         </div>
-
         <!-- Selettore Sede -->
         <div class="flex items-center gap-2 bg-brand-50 border border-brand-200 px-3 py-1.5 rounded-lg">
           <svg class="w-4 h-4 text-brand-600 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -50,7 +49,7 @@
       <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
         <div class="relative flex-1 sm:w-52">
           <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-          <input type="text" id="searchInput" placeholder="Cerca allievo o note..."
+          <input type="text" id="searchInput" placeholder="Cerca allievo o note..." 
             class="w-full pl-9 pr-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
         </div>
         <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
@@ -126,6 +125,7 @@
         </div>
         <div class="divide-y divide-slate-100" id="morningSlots"></div>
       </div>
+      
       <!-- Pomeriggio -->
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
@@ -160,7 +160,7 @@
         <input type="hidden" id="modalStudentIndex">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nome Allievo *</label>
-          <input type="text" id="studentName" required placeholder="Es. Mario Rossi"
+          <input type="text" id="studentName" required placeholder="Es. Mario Rossi" 
             class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm">
         </div>
         <div>
@@ -173,12 +173,12 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">PIN Numerico di Blocco (Opzionale)</label>
-          <input type="password" id="bookingPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Es. 1234 (per bloccare modifica/cancellazione)"
+          <input type="password" id="bookingPin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Es. 1234 (per bloccare modifica/cancellazione)" 
             class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm font-mono">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Note (opzionale)</label>
-          <textarea id="bookingNotes" rows="2" placeholder="Es. Prima guida, parcheggi, istruttore..."
+          <textarea id="bookingNotes" rows="2" placeholder="Es. Prima guida, parcheggi, istruttore..." 
             class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm"></textarea>
         </div>
         <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
@@ -200,7 +200,7 @@
         <p class="text-xs text-slate-600 mt-1">Inserisci il PIN per modificare o eliminare la prenotazione.</p>
       </div>
       <div>
-        <input type="password" id="pinInputVerify" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="PIN..."
+        <input type="password" id="pinInputVerify" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="PIN..." 
           class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm text-center font-mono tracking-widest text-lg">
         <p id="pinErrorMsg" class="text-xs text-red-500 mt-1 hidden font-medium">PIN errato. Riprova.</p>
       </div>
@@ -211,7 +211,7 @@
     </div>
   </div>
 
-  <!-- Modal Configurazione Posti per Turno (1 o 2 istruttori/auto) -->
+  <!-- Modal Configurazione Posti per Turno -->
   <div id="configModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
       <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
@@ -248,27 +248,25 @@
 
   <!-- Firebase integration (Firestore) -->
   <script type="module">
-   // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCv_J-PI4TyRX57ozu01_3NkSjbbsPBJwQ",
-  authDomain: "monticelli-1faf4.firebaseapp.com",
-  projectId: "monticelli-1faf4",
-  storageBucket: "monticelli-1faf4.firebasestorage.app",
-  messagingSenderId: "1033737443263",
-  appId: "1:1033737443263:web:0b262e51d0ca012cb3f30a"
-};
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCv_J-PI4TyRX57ozu01_3NkSjbbsPBJwQ",
+      authDomain: "monticelli-1faf4.firebaseapp.com",
+      projectId: "monticelli-1faf4",
+      storageBucket: "monticelli-1faf4.firebasestorage.app",
+      messagingSenderId: "1033737443263",
+      appId: "1:1033737443263:web:0b262e51d0ca012cb3f30a"
+    };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     // ==========================================
-    // CONFIGURAZIONE SEDI (Modifica qui i nomi)
+    // CONFIGURAZIONE SEDI
     // ==========================================
     const SEDI = [
       { id: "monticelli", name: "Monticelli" },
@@ -308,16 +306,14 @@ const app = initializeApp(firebaseConfig);
       return `${year}-${month}-${day}`;
     }
 
-    // Recupera sede da URL (?sede=...) o localStorage o default prima sede
     const urlParams = new URLSearchParams(window.location.search);
     const paramSede = urlParams.get('sede');
     const savedSede = localStorage.getItem('selectedSede');
     let currentSede = SEDI.some(s => s.id === paramSede) ? paramSede :
                       (SEDI.some(s => s.id === savedSede) ? savedSede : SEDI[0].id);
-
     let currentDate = getLocalDateString();
-    let currentDayBookings = {}; 
-    let hourSettings = {}; 
+    let currentDayBookings = {};
+    let hourSettings = {};
     let unsubscribeBookings = null;
     let unsubscribeSettings = null;
 
@@ -330,8 +326,8 @@ const app = initializeApp(firebaseConfig);
     const bookingForm = document.getElementById('bookingForm');
     const configModal = document.getElementById('configModal');
     const pinModal = document.getElementById('pinModal');
+    const confirmModal = document.getElementById('customConfirmModal');
 
-    // Popola il menu a tendina delle sedi
     SEDI.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.id;
@@ -353,7 +349,6 @@ const app = initializeApp(firebaseConfig);
     }
 
     function showConfirmModal(title, message, onConfirm) {
-      const confirmModal = document.getElementById('customConfirmModal');
       document.getElementById('customConfirmTitle').innerText = title;
       document.getElementById('customConfirmMessage').innerText = message;
       
@@ -365,12 +360,10 @@ const app = initializeApp(firebaseConfig);
         okBtn.onclick = null;
         cancelBtn.onclick = null;
       };
-
       okBtn.onclick = () => {
         cleanUp();
         if (onConfirm) onConfirm();
       };
-      
       cancelBtn.onclick = cleanUp;
       confirmModal.classList.remove('hidden');
     }
@@ -397,7 +390,6 @@ const app = initializeApp(firebaseConfig);
       });
     }
 
-    // Default: 1 guida (1 auto) per ogni slot da 30 minuti. Se attivato doubleGuide, permette 2 guide contemporanee.
     function isDoubleSlot(hourId) {
       return hourSettings[hourId] && hourSettings[hourId].doubleGuide === true;
     }
@@ -406,15 +398,13 @@ const app = initializeApp(firebaseConfig);
       morningContainer.innerHTML = '';
       afternoonContainer.innerHTML = '';
       const filterTerm = searchInput.value.toLowerCase().trim();
-
       let totalSlotsCount = 0;
       let bookedSlotsCount = 0;
 
       HOURS_CONFIG.forEach(hourObj => {
         const isDouble = isDoubleSlot(hourObj.id);
-        const maxSeats = isDouble ? 2 : 1; 
+        const maxSeats = isDouble ? 2 : 1;
         totalSlotsCount += maxSeats;
-
         const hourBookings = currentDayBookings[hourObj.id] || [null, null];
 
         if (filterTerm) {
@@ -428,7 +418,7 @@ const app = initializeApp(firebaseConfig);
 
         const slotEl = document.createElement('div');
         slotEl.className = "p-4 sm:px-6 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors hover:bg-slate-50/80";
-
+        
         let badgeType = isDouble 
           ? `<span class="text-[11px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-medium">2 Posti (2 Auto)</span>` 
           : `<span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">30 min • Pat. B</span>`;
@@ -445,7 +435,6 @@ const app = initializeApp(firebaseConfig);
           const data = hourBookings[i];
           const isBooked = !!data;
           const subLabel = isDouble ? `Auto ${i + 1}` : "Guida 30m";
-
           if (isBooked) bookedSlotsCount++;
 
           if (!isBooked) {
@@ -468,7 +457,7 @@ const app = initializeApp(firebaseConfig);
               default: statusBadge = '<span class="px-2 py-0.5 text-[10px] rounded-full bg-blue-100 text-blue-700 font-medium">Confermata</span>';
             }
             let lockBadge = data.pin ? `<span class="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold rounded flex items-center gap-1">🔒</span>` : '';
-
+            
             htmlContent += `
               <div class="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-between gap-3">
                 <div class="flex items-center gap-2.5 overflow-hidden">
@@ -495,10 +484,8 @@ const app = initializeApp(firebaseConfig);
             `;
           }
         }
-
         htmlContent += `</div>`;
         slotEl.innerHTML = htmlContent;
-
         if (hourObj.period === 'morning') morningContainer.appendChild(slotEl);
         else afternoonContainer.appendChild(slotEl);
       });
@@ -512,14 +499,13 @@ const app = initializeApp(firebaseConfig);
     window.requestSlotAccess = function(hourId, seatIndex, action) {
       const bookings = currentDayBookings[hourId] || [];
       const booking = bookings[seatIndex];
-
       if (booking && booking.pin) {
         openPinModal(hourId, seatIndex, action);
       } else {
         if (action === 'delete') deleteBooking(hourId, seatIndex);
         else openBookingModal(hourId, seatIndex);
       }
-    }
+    };
 
     function openPinModal(hourId, seatIndex, action) {
       const pinInput = document.getElementById('pinInputVerify');
@@ -538,9 +524,10 @@ const app = initializeApp(firebaseConfig);
         pinModal.classList.add('hidden');
         verifyBtn.onclick = null;
         cancelBtn.onclick = null;
+        pinInput.onkeydown = null;
       };
 
-      verifyBtn.onclick = () => {
+      const handleVerify = () => {
         if (pinInput.value === booking.pin) {
           cleanup();
           if (action === 'delete') deleteBooking(hourId, seatIndex);
@@ -550,7 +537,15 @@ const app = initializeApp(firebaseConfig);
           pinInput.focus();
         }
       };
+
+      verifyBtn.onclick = handleVerify;
       cancelBtn.onclick = cleanup;
+      pinInput.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleVerify();
+        }
+      };
     }
 
     function openBookingModal(hourId, seatIndex) {
@@ -563,7 +558,6 @@ const app = initializeApp(firebaseConfig);
 
       const bookings = currentDayBookings[hourId] || [];
       const existing = bookings[seatIndex];
-
       if (existing) {
         document.getElementById('studentName').value = existing.name;
         document.getElementById('bookingStatus').value = existing.status || 'confirmed';
@@ -582,20 +576,18 @@ const app = initializeApp(firebaseConfig);
       showConfirmModal("Cancellazione Prenotazione", "Sei sicuro di voler eliminare questa prenotazione?", async () => {
         let bookings = [...(currentDayBookings[hourId] || [null, null])];
         bookings[seatIndex] = null;
-
         if (bookings.every(b => !b)) {
           delete currentDayBookings[hourId];
         } else {
           currentDayBookings[hourId] = bookings;
         }
-
         try {
           await setDoc(doc(db, `bookings_patente_b_${currentSede}`, currentDate), currentDayBookings);
         } catch (e) {
           console.error("Errore cancellazione:", e);
         }
       });
-    }
+    };
 
     bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -607,9 +599,8 @@ const app = initializeApp(firebaseConfig);
       const seatIndex = parseInt(document.getElementById('modalStudentIndex').value);
       const isDouble = isDoubleSlot(hourId);
       const maxSeats = isDouble ? 2 : 1;
-
       let bookings = [...(currentDayBookings[hourId] || Array(maxSeats).fill(null))];
-      
+
       bookings[seatIndex] = {
         name: document.getElementById('studentName').value.trim(),
         license: "B",
@@ -617,7 +608,6 @@ const app = initializeApp(firebaseConfig);
         pin: document.getElementById('bookingPin').value.trim(),
         notes: document.getElementById('bookingNotes').value.trim()
       };
-
       currentDayBookings[hourId] = bookings;
 
       try {
@@ -635,7 +625,7 @@ const app = initializeApp(firebaseConfig);
     document.getElementById('printDailyBtn').addEventListener('click', () => {
       const printWindow = window.open('', '_blank', 'width=800,height=600');
       const sedeName = getCurrentSedeName();
-      
+
       let htmlContent = `
         <!DOCTYPE html>
         <html lang="it">
@@ -663,10 +653,9 @@ const app = initializeApp(firebaseConfig);
         const isDouble = isDoubleSlot(hourObj.id);
         const maxSeats = isDouble ? 2 : 1;
         const bookings = currentDayBookings[hourObj.id] || [];
-
         htmlContent += `<div class="hour-row"><div class="time">${hourObj.label}</div><div class="details">`;
-
         let hasBookings = false;
+
         for (let i = 0; i < maxSeats; i++) {
           const data = bookings[i];
           if (data) {
@@ -683,7 +672,6 @@ const app = initializeApp(firebaseConfig);
         if (!hasBookings) {
           htmlContent += `<span class="empty">Libero</span>`;
         }
-
         htmlContent += `</div></div>`;
       });
 
@@ -698,14 +686,12 @@ const app = initializeApp(firebaseConfig);
       printWindow.document.close();
     });
 
-    // Gestione Configurazione (1 posto o 2 posti contemporanei per fascia da 30m)
+    // Gestione Configurazione Posti
     document.getElementById('openConfigBtn').addEventListener('click', () => {
       const container = document.getElementById('configSlotsList');
       container.innerHTML = '';
-
       HOURS_CONFIG.forEach(hourObj => {
         const isDouble = isDoubleSlot(hourObj.id);
-
         const row = document.createElement('div');
         row.className = "px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 flex items-center justify-between gap-2";
         row.innerHTML = `
@@ -719,14 +705,11 @@ const app = initializeApp(firebaseConfig);
             <span class="ml-2 text-xs font-semibold text-slate-700 w-24">${isDouble ? '2 Posti (2 Auto)' : '1 Posto (1 Auto)'}</span>
           </label>
         `;
-
-        // Aggiorna testo label in tempo reale al click
         const checkbox = row.querySelector('.config-double-toggle');
         const labelSpan = row.querySelector('span.w-24');
         checkbox.addEventListener('change', () => {
           labelSpan.textContent = checkbox.checked ? '2 Posti (2 Auto)' : '1 Posto (1 Auto)';
         });
-
         container.appendChild(row);
       });
       configModal.classList.remove('hidden');
@@ -736,11 +719,10 @@ const app = initializeApp(firebaseConfig);
       const newSettings = {};
       HOURS_CONFIG.forEach(hourObj => {
         const toggle = document.querySelector(`.config-double-toggle[data-hour-id="${hourObj.id}"]`);
-        newSettings[hourObj.id] = { 
+        newSettings[hourObj.id] = {
           doubleGuide: toggle ? toggle.checked : false
         };
       });
-
       try {
         await setDoc(doc(db, 'settings_patente_b', currentSede), newSettings);
         configModal.classList.add('hidden');
@@ -749,23 +731,30 @@ const app = initializeApp(firebaseConfig);
       }
     });
 
-    // Cambio Sede dal menu a tendina
     sedeSelector.addEventListener('change', (e) => {
       currentSede = e.target.value;
       localStorage.setItem('selectedSede', currentSede);
-      
-      // Aggiorna anche l'URL senza ricaricare la pagina, così il link è condivisibile
       const newUrl = new URL(window.location);
       newUrl.searchParams.set('sede', currentSede);
       window.history.replaceState({}, '', newUrl);
-
       updateSedeLabels();
       listenToSettings();
       listenToDay(currentDate);
     });
 
-    [bookingModal, configModal, pinModal, document.getElementById('customConfirmModal')].forEach(modal => {
+    // Gestione Chiusura modali secondari al click sullo sfondo (escluso bookingModal per sicurezza)
+    [configModal, pinModal, confirmModal].forEach(modal => {
       modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+    });
+
+    // Supporto tasto ESC per chiudere i modali rapidamente
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        bookingModal.classList.add('hidden');
+        configModal.classList.add('hidden');
+        pinModal.classList.add('hidden');
+        confirmModal.classList.add('hidden');
+      }
     });
 
     datePicker.addEventListener('change', (e) => { currentDate = e.target.value; listenToDay(currentDate); });
